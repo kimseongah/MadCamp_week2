@@ -25,7 +25,10 @@
         </activity>
         <meta-data
             android:name="com.kakao.vectormap.APP_KEY"
-            android:value="34029ec9c36ccde6fb96639214de81af"/>
+            android:value="eef8e95471365e96078a3a8450ca1581"/>
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3347511713"/>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
