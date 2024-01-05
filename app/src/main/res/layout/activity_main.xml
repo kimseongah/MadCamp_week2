@@ -17,12 +17,17 @@
         android:layout_marginTop="16dp"/>
 
     <!-- MapView Placeholder -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/mapview_divider"/>
+
     <com.kakao.vectormap.MapView
         android:id="@+id/map_view"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="350dp"
         android:layout_below="@id/textViewTitle"
-        android:layout_margin="16dp"/>
+        android:layout_margin="16dp" />
 
     <!-- Event List Item -->
     <LinearLayout
