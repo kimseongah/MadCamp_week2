@@ -10,7 +10,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven("https://devrepo.kakao.com/nexus/repository/kakaomap-releases/")
+
+        maven {url = uri("https://devrepo.kakao.com/nexus/repository/kakaomap-releases/")}
+        maven {url = uri( "https://jitpack.io")}
     }
 }
 
