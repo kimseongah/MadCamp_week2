@@ -6,9 +6,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import com.kakao.sdk.common.util.Utility
-import com.example.madcamp_week2.databinding.ActivityLoginBinding
-import com.example.madcamp_week2.databinding.ActivityMainBinding
+
 class login : AppCompatActivity() {
 
     private lateinit var editTextUsername: EditText
