@@ -34,7 +34,8 @@ class MainActivity : BaseActivity() {
 
     val latlngMap = mapOf(
         "카이마루" to LatLng.from(36.3736111, 127.3588611),
-        "스포츠 컴플렉스" to LatLng.from(36.3711, 127.3604),
+        "스포츠 컴플렉스" to LatLng.from(36.3726, 127.3614),
+        "울림홀" to LatLng.from(36.3731, 127.3601),
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +45,9 @@ class MainActivity : BaseActivity() {
 
         val myMutableList: MutableList<String> = mutableListOf()
         myMutableList.add("adfad - adfaafd")
-        events  = listOf(Event("fdsa","Rock!", "https://image.ytn.co.kr/general/jpg/2023/0202/202302021006048611_t.jpg", CalendarDay.today(),  "스포츠 컴플렉스", myMutableList, "16:00 ~ 18:00"))
+        events  = listOf(Event("fdsa","Rock!", "https://image.ytn.co.kr/general/jpg/2023/0202/202302021006048611_t.jpg", CalendarDay.today(),  "스포츠 컴플렉스", myMutableList, "16:00 ~ 18:00"),
+            Event("asdf","Rock!", "https://image.ytn.co.kr/general/jpg/2023/0202/202302021006048611_t.jpg", CalendarDay.today(),  "카이마루", myMutableList, "16:00 ~ 18:00"),
+            Event("qwer","Rock!", "https://image.ytn.co.kr/general/jpg/2023/0202/202302021006048611_t.jpg", CalendarDay.today(),  "울림홀", myMutableList, "16:00 ~ 18:00"))
 
         // 데이터 로드 및 어댑터에 데이터 설정
         mapView = findViewById<MapView>(R.id.map_view)
@@ -102,21 +105,9 @@ class MainActivity : BaseActivity() {
 
     private fun setPing(event: Event){
         val pos = latlngMap[event.location]
-//        val styles = kakaoMap?.labelManager!!
-//            .addLabelStyles(
-//                LabelStyles.from(
-//                    LabelStyle.from(R.drawable.ping)
-//                        .setIconTransition(
-//                            LabelTransition.from(
-//                                Transition.None,
-//                                Transition.None
-//                            )
-//                        )
-//                )
-//            )
         val styles = kakaoMap!!.labelManager?.addLabelStyles(LabelStyles.from(LabelStyle.from(R.drawable.ping)))
         val labelId = "label_${event.title}_${event.location}"
-        labelLayer?.addLabel(LabelOptions.from(pos).setStyles(styles))
+        labelLayer?.addLabel(LabelOptions.from(labelId, pos).setStyles(styles))
 
     }
 
