@@ -5,9 +5,10 @@
     <string name="info">밴드정보</string>
     <string name="register">일정등록</string>
     <string name="see_more">더보기</string>
-    <string name="social_login_info_naver_client_id">ID_KEY</string>
-    <string name="social_login_info_naver_client_secret">SECREY_KEY</string>
-    <string name="social_login_info_naver_client_name">네이버아이디 로그인</string>
+    <string name="social_login_info_naver_client_id">s7XwiqSnztsDfq2pWftZ</string>
+    <string name="social_login_info_naver_client_secret">0UZCvEoL16</string>
+    <string name="social_login_info_naver_client_name">Drop!</string>
+
     <string name="title_activity_main2">MainActivity2</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
