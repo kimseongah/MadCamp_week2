@@ -18,6 +18,7 @@ class login : AppCompatActivity() {
     private lateinit var editTextPassword: EditText
     private lateinit var buttonLogin: Button
     private lateinit var buttonkakaoLogin: Button
+    private lateinit var buttonSignin: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,11 +30,12 @@ class login : AppCompatActivity() {
         editTextPassword = findViewById(R.id.editTextPassword)
         buttonLogin = findViewById(R.id.buttonLogin)
         buttonkakaoLogin = findViewById(R.id.buttonkakaoLogin)
-
+        buttonSignin = findViewById(R.id.buttonSignin)
         // 로그인 버튼 클릭 시 이벤트 처리
         buttonLogin.setOnClickListener {
             val username = editTextUsername.text.toString()
             val password = editTextPassword.text.toString()
+
 
             // 여기에 로그인 처리 로직을 추가할 수 있습니다.
             // 예시로 간단한 로그인 유효성 검사를 수행합니다.
@@ -49,7 +51,10 @@ class login : AppCompatActivity() {
                 showToast("Invalid credentials")
             }
         }
-        buttonkakaoLogin.setOnClickListener {  }
+        buttonSignin.setOnClickListener {
+            val intent = Intent(this, SignIn::class.java)
+            startActivity(intent)
+        }
     }
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
