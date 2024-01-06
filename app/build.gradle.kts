@@ -60,8 +60,8 @@ dependencies {
     implementation ("com.google.firebase:firebase-auth:22.0.0")
     implementation ("com.google.firebase:firebase-bom:32.0.0")
     implementation ("com.google.android.gms:play-services-auth:20.5.0")
-    implementation ("com.navercorp.nid:oauth-jdk8:5.1.0") // jdk 8
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.1.1")
+
 
 }
