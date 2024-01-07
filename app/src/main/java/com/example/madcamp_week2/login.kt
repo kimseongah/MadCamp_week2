@@ -22,10 +22,12 @@ import kotlinx.coroutines.launch
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.IOException
 import java.security.DigestException
@@ -54,7 +56,7 @@ class login : AppCompatActivity() {
         buttonLogin.setOnClickListener {
             val username = editTextUsername.text.toString()
             val password = editTextPassword.text.toString()
-//            loginWithServer(username, password)
+            loginWithServer(username, password)
 
         }
         buttonSignin.setOnClickListener {
@@ -62,10 +64,130 @@ class login : AppCompatActivity() {
             startActivity(intent)
         }
         buttonkakaoLogin.setOnClickListener {
-            if (UserApiClient.instance.isKakaoTalkLoginAvailable(this)) {
-//                loginWithKakao()
+            loginWithKakao()
+        }
+    }
+
+    private fun loginWithServer(id: String, password: String) {
+        val url = "http://172.10.7.78/logininserver"
+
+        val jsonObject = JSONObject()
+        jsonObject.put("id", id)
+        jsonObject.put("password", hashSHA256(password))
+
+        val jsonString = jsonObject.toString()
+        val client = OkHttpClient()
+
+        val mediaType = "application/json; charset=utf-8".toMediaType()
+        val requestBody = jsonString.toRequestBody(mediaType)
+
+        val request = Request.Builder()
+            .url(url) // Replace with your server's URL
+            .post(requestBody)
+            .build()
+        client.newCall(request).enqueue(object : okhttp3.Callback {
+            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
+                if (response.isSuccessful) { // HTTP 응답 코드가 200인 경우
+                    val responseBodyString = response.body?.string()
+                    val jsonObject = JSONObject(responseBodyString)
+                    val nameValue = jsonObject.optString("name")
+
+                    val sharedPreferences = getSharedPreferences("MyAppPreferences", MODE_PRIVATE)
+                    val editor = sharedPreferences.edit()
+                    editor.putString("USERNAME", nameValue)
+                    editor.apply()
+                    val intent = Intent(this@login, MainActivity::class.java)
+                    startActivity(intent)
+                } else {
+                }
+                response.body?.close()
+            }
+
+            override fun onFailure(call: okhttp3.Call, e: IOException) {
+                // Handle failure
+                e.printStackTrace()
+            }
+        })
+    }
+
+    private fun loginWithKakao() {
+        val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
+            if (error != null) {
+                Log.e(TAG, "카카오계정으로 로그인 실패", error)
+            } else if (token != null) {
+                Log.i(TAG, "카카오계정으로 로그인 성공 ${token.accessToken}")
             }
         }
+
+        if (UserApiClient.instance.isKakaoTalkLoginAvailable(this)) {
+            UserApiClient.instance.loginWithKakaoTalk(this) { token, error ->
+                if (error != null) {
+                    Log.e(TAG, "카카오톡으로 로그인 실패", error)
+                    if (error is ClientError) {
+                        return@loginWithKakaoTalk
+                    }
+                    UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
+                } else if (token != null) {
+                    Log.i(TAG, "카카오톡으로 로그인 성공 ${token.accessToken}")
+                }
+            }
+        } else {
+            UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
+        }
+        UserApiClient.instance.me { user, error ->
+            if (error != null) {
+                Log.e(TAG, "사용자 정보 요청 실패", error)
+            } else if (user != null) {
+                val id = user.kakaoAccount?.email
+                val password = user.id.toString()
+                val name = user.kakaoAccount?.profile?.nickname
+                // 서버로 사용자 정보 전송
+                sendUserInfoToServer(id, password, name)
+            }
+        }
+    }
+    private fun sendUserInfoToServer(id: String?, password: String?, name: String?): Boolean {
+        val url = "http://172.10.7.78/loginwkakao" // 서버의 API 엔드포인트
+
+        val jsonObject = JSONObject()
+        jsonObject.put("id", id)
+        jsonObject.put("password", hashSHA256(password))
+        jsonObject.put("name", name)
+
+        val jsonString = jsonObject.toString()
+        val client = OkHttpClient()
+
+        val mediaType = "application/json; charset=utf-8".toMediaType()
+        val requestBody = jsonString.toRequestBody(mediaType)
+
+        val request = Request.Builder()
+            .url(url) // Replace with your server's URL
+            .post(requestBody)
+            .build()
+        var result = false
+        client.newCall(request).enqueue(object : okhttp3.Callback {
+            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
+                if (response.isSuccessful) { // HTTP 응답 코드가 200인 경우
+                    val sharedPreferences = getSharedPreferences("MyAppPreferences", MODE_PRIVATE)
+                    val editor = sharedPreferences.edit()
+                    editor.putString("USERNAME", name)
+                    editor.apply()
+                    result = true
+                    val intent = Intent(this@login, MainActivity::class.java)
+                    startActivity(intent)
+                } else {
+                    result = false
+                }
+                response.body?.close()
+            }
+
+            override fun onFailure(call: okhttp3.Call, e: IOException) {
+                // Handle failure
+                e.printStackTrace()
+                result = false
+            }
+        })
+        return result
     }
 
 
@@ -74,11 +196,11 @@ class login : AppCompatActivity() {
     }
     // sha-256 hashing
 
-    fun hashSHA256(msg: String):String {
+    fun hashSHA256(msg: String?):String {
         val hash: ByteArray
         try {
             val md = MessageDigest.getInstance("SHA-256")
-            md.update(msg.toByteArray())
+            md.update(msg!!.toByteArray())
             hash = md.digest()
         } catch (e: CloneNotSupportedException) {
             throw DigestException("couldn't make digest of partial content");
