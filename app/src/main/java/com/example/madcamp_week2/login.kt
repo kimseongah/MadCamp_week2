@@ -55,6 +55,11 @@ class login : AppCompatActivity() {
             val username = editTextUsername.text.toString()
             val password = editTextPassword.text.toString()
 //            loginWithServer(username, password)
+
+        }
+        buttonSignin.setOnClickListener {
+            val intent = Intent(this, SignIn::class.java)
+            startActivity(intent)
         }
         buttonkakaoLogin.setOnClickListener {
             if (UserApiClient.instance.isKakaoTalkLoginAvailable(this)) {
