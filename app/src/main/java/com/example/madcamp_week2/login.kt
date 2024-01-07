@@ -10,12 +10,24 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
-import com.android.volley.ClientError
+import com.android.volley.Response
 import com.example.madcamp_week2.databinding.ActivityLoginBinding
 import com.example.madcamp_week2.databinding.ActivityMainBinding
+import com.google.firebase.auth.UserInfo
+import com.google.gson.Gson
 import com.kakao.sdk.auth.model.OAuthToken
+import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.user.UserApiClient
 import kotlinx.coroutines.launch
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
+import org.json.JSONObject
+import java.io.IOException
 import java.security.DigestException
 import java.security.MessageDigest
 
@@ -41,73 +53,15 @@ class login : AppCompatActivity() {
         buttonLogin.setOnClickListener {
             val username = editTextUsername.text.toString()
             val password = editTextPassword.text.toString()
-
-            // 여기에 로그인 처리 로직을 추가할 수 있습니다.
-            // 예시로 간단한 로그인 유효성 검사를 수행합니다.
-            if (username == "user" && password == "password") {
-                // 로그인 성공 시
-                showToast("Login successful")
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-                finish()
-                // 여기에 로그인 성공 후의 작업을 추가할 수 있습니다.
-            } else {
-                // 로그인 실패 시
-                showToast("Invalid credentials")
-            }
+//            loginWithServer(username, password)
         }
         buttonkakaoLogin.setOnClickListener {
-            val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
-                if (error != null) {
-                    Log.e(TAG, "카카오계정으로 로그인 실패", error)
-                } else if (token != null) {
-                    Log.i(TAG, "카카오계정으로 로그인 성공 ${token.accessToken}")
-                }
-            }
-
-        // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
             if (UserApiClient.instance.isKakaoTalkLoginAvailable(this)) {
-                loginWithKakao()
+//                loginWithKakao()
             }
         }
     }
 
-    private fun loginWithKakao() {
-        val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
-            if (error != null) {
-                Log.e(TAG, "카카오계정으로 로그인 실패", error)
-            } else if (token != null) {
-                Log.i(TAG, "카카오계정으로 로그인 성공 ${token.accessToken}")
-            }
-        }
-
-        if (UserApiClient.instance.isKakaoTalkLoginAvailable(this)) {
-            UserApiClient.instance.loginWithKakaoTalk(this) { token, error ->
-                if (error != null) {
-                    Log.e(TAG, "카카오톡으로 로그인 실패", error)
-                    if (error is ClientError) {
-                        return@loginWithKakaoTalk
-                    }
-                    UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
-                } else if (token != null) {
-                    Log.i(TAG, "카카오톡으로 로그인 성공 ${token.accessToken}")
-                }
-            }
-        } else {
-            UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
-        }
-        UserApiClient.instance.me { user, error ->
-            if (error != null) {
-                Log.e(TAG, "사용자 정보 요청 실패", error)
-            } else if (user != null) {
-                val userId = user.id
-                val email = user.kakaoAccount?.email
-//                val nickname = user.kakaoAccount?.profile?.nickname
-//                // 서버로 사용자 정보 전송
-//                sendUserInfoToServer(userId, email, nickname)
-            }
-        }
-    }
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
