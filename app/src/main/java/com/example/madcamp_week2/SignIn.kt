@@ -76,7 +76,7 @@ class SignIn : AppCompatActivity() {
                 val requestBody = jsonString.toRequestBody(mediaType)
 
                 val request = Request.Builder()
-                    .url("http://192.168.0.75:80/store_data") // Replace with your server's URL
+                    .url("http://172.10.7.78:80/store_data") // Replace with your server's URL
                     .post(requestBody)
                     .build()
 

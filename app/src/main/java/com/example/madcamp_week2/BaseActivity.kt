@@ -14,7 +14,7 @@ open class BaseActivity : AppCompatActivity() {
                 R.id.page_1 -> navigateTo(MainActivity::class.java)
                 R.id.page_2 -> navigateTo(NoneActivity::class.java)
                 R.id.page_3 -> navigateTo(NoneActivity::class.java)
-                R.id.page_4 -> navigateTo(NoneActivity::class.java)
+                R.id.page_4 -> navigateTo(Register::class.java)
             }
             true
         }
