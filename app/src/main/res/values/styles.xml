@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Your App Theme attributes -->
+    </style>
+
+    <!-- Define a style for EditText -->
+    <style name="YourEditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="colorControlNormal">#11AEF9</item>
+        <!-- Add other attributes as needed -->
+    </style>
+</resources>

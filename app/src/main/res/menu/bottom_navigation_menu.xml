@@ -15,10 +15,10 @@
         android:id="@+id/page_3"
         android:enabled="true"
         android:icon="@drawable/ic_home"
-        android:title="@string/week"/>
+        android:title="@string/info"/>
     <item
         android:id="@+id/page_4"
         android:enabled="true"
-        android:icon="@drawable/ic_home"
-        android:title="@string/week"/>
+        android:icon="@drawable/baseline_playlist_add_24"
+        android:title="@string/register"/>
 </menu>

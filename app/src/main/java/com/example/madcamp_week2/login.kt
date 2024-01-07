@@ -36,6 +36,7 @@ class login : AppCompatActivity() {
     private lateinit var editTextUsername: EditText
     private lateinit var editTextPassword: EditText
     private lateinit var buttonLogin: Button
+    private lateinit var buttonSignin: Button
     private lateinit var buttonkakaoLogin: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +49,7 @@ class login : AppCompatActivity() {
         editTextPassword = findViewById(R.id.editTextPassword)
         buttonLogin = findViewById(R.id.buttonLogin)
         buttonkakaoLogin = findViewById(R.id.buttonkakaoLogin)
-
+        buttonSignin = findViewById(R.id.buttonSignin)
         // 로그인 버튼 클릭 시 이벤트 처리
         buttonLogin.setOnClickListener {
             val username = editTextUsername.text.toString()
