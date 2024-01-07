@@ -43,6 +43,12 @@ class login : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val sharedPreferences = getSharedPreferences("MyAppPreferences", MODE_PRIVATE)
+        val username = sharedPreferences.getString("USERNAME", "")
+        if(!username.isNullOrEmpty()){
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
         setContentView(R.layout.activity_login)
 
         Log.d("hash_test",hashSHA256("pw1"))
