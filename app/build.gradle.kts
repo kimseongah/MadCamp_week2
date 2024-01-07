@@ -66,8 +66,10 @@ dependencies {
     implementation ("com.google.android.gms:play-services-auth:20.5.0")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.1.1")
-//    implementation("com.navercorp.nid:oauth:5.9.0") // jdk 11
-//    implementation("com.navercorp.nid:oauth-jdk8:5.9.0") // jdk 8
+    implementation("com.kakao.sdk:v2-user:2.19.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.1")
+    implementation("com.squareup.okhttp3:okhttp:4.9.0")
+//    implementation(group="com.kakao.sdk", name="usermgmt", version="1.27.0")
 //    implementation ("com.prolificinteractive:material-calendarview:2.0.0")
 
 
