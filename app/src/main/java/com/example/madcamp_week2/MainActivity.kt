@@ -38,6 +38,8 @@ class MainActivity : BaseActivity() {
         "울림홀" to LatLng.from(36.3731, 127.3601),
     )
 
+    private var labelToEventMap = hashMapOf<String, Event>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -64,6 +66,11 @@ class MainActivity : BaseActivity() {
         override fun onMapReady(kakaoMap: KakaoMap) {
             this@MainActivity.kakaoMap = kakaoMap
             labelLayer = kakaoMap.labelManager!!.layer
+
+            kakaoMap.setOnLabelClickListener { kakaomap, labellayer, label ->
+                onLabelClicked(label.labelId)
+                true
+            }
         }
 
 
@@ -109,6 +116,15 @@ class MainActivity : BaseActivity() {
         val labelId = "label_${event.title}_${event.location}"
         labelLayer?.addLabel(LabelOptions.from(labelId, pos).setStyles(styles))
 
+        labelToEventMap[labelId] = event
+    }
+
+    private fun onLabelClicked(labelId: String) {
+        val event = labelToEventMap[labelId]
+        val eventIndex = events.indexOf(event)
+        if (eventIndex != -1) {
+            recyclerView?.scrollToPosition(eventIndex)
+        }
     }
 
 }
