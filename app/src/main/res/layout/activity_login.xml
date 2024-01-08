@@ -10,10 +10,10 @@
     <ImageView
         android:id="@+id/imageViewMicrophone"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="80dp"
         android:layout_marginBottom="0dp"
         android:foregroundGravity="center"
-        android:src="@drawable/microphone"
+        android:src="@drawable/main_logo"
         app:layout_constraintBottom_toTopOf="@+id/textView"
         app:layout_constraintDimensionRatio="W,1:1"
         app:layout_constraintWidth_percent="0.3" />
@@ -58,18 +58,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/editTextUsername" />
 
+    <CheckBox
+        android:id="@+id/checkBoxAutoLogin"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="자동 로그인"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editTextPassword"
+        app:layout_constraintBottom_toTopOf="@id/buttonLogin" />  <!-- 하단 제약을 로그인 버튼의 상단에 맞춤 -->
+
     <Button
         android:id="@+id/buttonLogin"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="0dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="#55B8E7"
         android:text="로그인"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editTextPassword" />
+        app:layout_constraintTop_toBottomOf="@id/checkBoxAutoLogin" />
 
     <Button
         android:id="@+id/buttonSignin"

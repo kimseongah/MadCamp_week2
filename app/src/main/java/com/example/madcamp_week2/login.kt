@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
@@ -40,6 +41,7 @@ class login : AppCompatActivity() {
     private lateinit var buttonLogin: Button
     private lateinit var buttonSignin: Button
     private lateinit var buttonkakaoLogin: ImageButton
+    private lateinit var autologin: CheckBox
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +60,8 @@ class login : AppCompatActivity() {
         buttonLogin = findViewById(R.id.buttonLogin)
         buttonkakaoLogin = findViewById(R.id.buttonkakaoLogin)
         buttonSignin = findViewById(R.id.buttonSignin)
+
+        autologin = findViewById(R.id.checkBoxAutoLogin)
         // 로그인 버튼 클릭 시 이벤트 처리
         buttonLogin.setOnClickListener {
             val username = editTextUsername.text.toString()
@@ -97,11 +101,13 @@ class login : AppCompatActivity() {
                     val responseBodyString = response.body?.string()
                     val jsonObject = JSONObject(responseBodyString)
                     val nameValue = jsonObject.optString("name")
-
-                    val sharedPreferences = getSharedPreferences("MyAppPreferences", MODE_PRIVATE)
-                    val editor = sharedPreferences.edit()
-                    editor.putString("USERNAME", nameValue)
-                    editor.apply()
+                    if(autologin.isChecked) {
+                        val sharedPreferences =
+                            getSharedPreferences("MyAppPreferences", MODE_PRIVATE)
+                        val editor = sharedPreferences.edit()
+                        editor.putString("USERNAME", nameValue)
+                        editor.apply()
+                    }
                     val intent = Intent(this@login, MainActivity::class.java)
                     startActivity(intent)
                 } else {
@@ -174,10 +180,12 @@ class login : AppCompatActivity() {
         client.newCall(request).enqueue(object : okhttp3.Callback {
             override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
                 if (response.isSuccessful) { // HTTP 응답 코드가 200인 경우
-                    val sharedPreferences = getSharedPreferences("MyAppPreferences", MODE_PRIVATE)
-                    val editor = sharedPreferences.edit()
-                    editor.putString("USERNAME", name)
-                    editor.apply()
+                    if(autologin.isChecked){
+                        val sharedPreferences = getSharedPreferences("MyAppPreferences", MODE_PRIVATE)
+                        val editor = sharedPreferences.edit()
+                        editor.putString("USERNAME", name)
+                        editor.apply()
+                    }
                     result = true
                     val intent = Intent(this@login, MainActivity::class.java)
                     startActivity(intent)
