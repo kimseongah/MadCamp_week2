@@ -4,22 +4,14 @@
     android:id="@+id/textViewTitle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/padding_0"
+    android:layout_marginTop="5dp"
     android:gravity="center_vertical"
-    android:layout_marginLeft="25dp"
-    android:layout_marginBottom="@dimen/padding_0">
+    android:layout_marginLeft="28dp"
+    android:layout_marginBottom="5dp">
 
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/microphone" />
+            android:layout_width="90dp"
+            android:layout_height="50dp"
+            android:src="@drawable/logo_icon" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/padding_1"
-            android:layout_gravity="center_vertical"
-            android:text="Drop!"
-            android:textSize="28sp" />
 </LinearLayout>

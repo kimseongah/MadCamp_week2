@@ -1,9 +1,9 @@
 package com.example.madcamp_week2
 
+import android.content.pm.LabeledIntent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kakao.vectormap.KakaoMap
@@ -11,6 +11,8 @@ import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapLifeCycleCallback
 import com.kakao.vectormap.MapView
+import com.kakao.vectormap.camera.CameraAnimation
+import com.kakao.vectormap.camera.CameraUpdateFactory
 import com.kakao.vectormap.label.LabelLayer
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
@@ -30,6 +32,7 @@ class MainActivity : BaseActivity() {
     private val startPosition = LatLng.from(36.3721, 127.3604)
     private var labelLayer: LabelLayer? = null
     private var kakaoMap: KakaoMap? = null // KakaoMap 객체를 저장할 변수 추가
+    private var currentSelectedLabelId: String? = null
 
 
     val latlngMap = mapOf(
@@ -71,7 +74,6 @@ class MainActivity : BaseActivity() {
 
             kakaoMap.setOnLabelClickListener { kakaomap, labellayer, label ->
                 // 기존 레이블 제거
-//                labelLayer?.remove(label)
                 onLabelClicked(label.labelId)
                 true
             }
@@ -116,7 +118,7 @@ class MainActivity : BaseActivity() {
 
     private fun setPing(event: Event){
         val pos = latlngMap[event.location]
-        val styles = kakaoMap!!.labelManager?.addLabelStyles(LabelStyles.from(LabelStyle.from(R.drawable.ping)))
+        val styles = kakaoMap!!.labelManager?.addLabelStyles(LabelStyles.from(LabelStyle.from(R.drawable.blue_ping)))
         val labelId = "label_${event.title}_${event.location}"
         labelLayer?.addLabel(LabelOptions.from(labelId, pos).setStyles(styles))
 
@@ -124,9 +126,27 @@ class MainActivity : BaseActivity() {
     }
 
     private fun onLabelClicked(labelId: String) {
-        updateLabelStyle(labelId, R.drawable.microphone)
+        if (currentSelectedLabelId != null) {
+            updateLabelStyle(currentSelectedLabelId!!, R.drawable.blue_ping)
+        }
+
+        // 새로운 레이블을 빨간색으로 변경
+        updateLabelStyle(labelId, R.drawable.red_ping)
+        currentSelectedLabelId = labelId
+
         val event = labelToEventMap[labelId]
         val eventIndex = events.indexOf(event)
+
+        val locationKey = events[eventIndex].location
+        val latLng = latlngMap[locationKey]
+
+        latLng?.let {
+            kakaoMap!!.moveCamera(
+                CameraUpdateFactory.newCenterPosition(latLng, startZoomLevel),
+                CameraAnimation.from(duration)
+            )
+        }
+
         if (eventIndex != -1) {
             val currentPosition = (recyclerView?.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
             val actualItemCount = events.size
@@ -145,11 +165,11 @@ class MainActivity : BaseActivity() {
         recyclerView?.layoutManager?.startSmoothScroll(smoothScroller)
     }
 
-    private fun updateLabelStyle(labelId: String, newIconResId: Int) {
-        // 새로운 스타일로 레이블 재생성
+    private fun updateLabelStyle(labelId: String, iconResId: Int) {
+        labelLayer?.remove(labelLayer!!.getLabel(labelId))
         val event = labelToEventMap[labelId]
         val pos = latlngMap[event?.location]
-        val styles = kakaoMap!!.labelManager?.addLabelStyles(LabelStyles.from(LabelStyle.from(newIconResId)))
+        val styles = kakaoMap!!.labelManager?.addLabelStyles(LabelStyles.from(LabelStyle.from(iconResId)))
         labelLayer?.addLabel(LabelOptions.from(labelId, pos).setStyles(styles))
     }
 

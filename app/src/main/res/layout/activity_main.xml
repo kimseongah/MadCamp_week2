@@ -21,14 +21,34 @@
             android:layout_height="wrap_content"
             android:layout_above="@id/bottom_navigation"
             android:orientation="vertical">
-                <TextView
-                    android:id="@+id/today_event"
-                    android:layout_width="match_parent"
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/padding_1"
-                    android:layout_marginBottom="@dimen/padding_0"
-                    android:text="오늘의 공연"
-                    android:textSize="22sp" />
+                    android:layout_marginLeft="38dp"
+                    android:layout_marginBottom="5dp"
+                    app:cardBackgroundColor="#F2F4F6"
+                    android:textStyle="bold"
+                    app:cardCornerRadius="80dp">
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginLeft="14dp"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/logo_grayscale"/>
+                        <TextView
+                            android:id="@+id/today_event"
+                            android:layout_gravity="center_vertical"
+                            android:layout_margin="4dp"
+                            android:paddingEnd="@dimen/padding_0"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="오늘의 공연"
+                            android:textSize="18sp" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+                </androidx.cardview.widget.CardView>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerView"
