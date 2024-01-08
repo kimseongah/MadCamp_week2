@@ -6,25 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#F2F4F6">
-    <LinearLayout
-        android:id="@+id/textViewTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_1"
-        android:layout_marginLeft="@dimen/padding_0">
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/microphone" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/padding_0"
-            android:text="Drop!"
-            android:textSize="28sp" />
-    </LinearLayout>
+    <include layout="@layout/title_text_view"/>
 
 
     <include layout="@layout/bottom_navigation"/>
