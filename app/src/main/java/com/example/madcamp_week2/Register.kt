@@ -9,6 +9,8 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Base64
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.DatePicker
@@ -18,13 +20,25 @@ import android.widget.Spinner
 import android.widget.TimePicker
 import android.widget.Toast
 import com.example.madcamp_week2.R
+import okhttp3.Callback
+import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import okio.BufferedSink
+import okio.source
 import org.json.JSONObject
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileInputStream
 import java.io.IOException
+import java.io.InputStream
 import java.util.Calendar
+
 //import kotlin.coroutines.jvm.internal.CompletedContinuation.context
 
 class Register : BaseActivity() {
@@ -34,7 +48,7 @@ class Register : BaseActivity() {
         hourOfDay: Int,
         minute: Int,
         is24HourView: Boolean
-    ) : TimePickerDialog(context,listener , hourOfDay, minute, is24HourView) {
+    ) : TimePickerDialog(context, listener, hourOfDay, minute, is24HourView) {
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
@@ -51,6 +65,7 @@ class Register : BaseActivity() {
             // You can add additional handling here if needed
         }
     }
+
     private val PICK_IMAGE = 100
     private var imageUri: Uri? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,7 +97,8 @@ class Register : BaseActivity() {
                 this,
                 R.style.CustomDatePickerDialogTheme,
                 DatePickerDialog.OnDateSetListener { _: DatePicker, selectedYear: Int, selectedMonth: Int, selectedDay: Int ->
-                    val selectedDate = "$selectedYear-${selectedMonth + 1}-$selectedDay" // Format the selected date as needed
+                    val selectedDate =
+                        "$selectedYear-${selectedMonth + 1}-$selectedDay" // Format the selected date as needed
                     concertDate.setText(selectedDate) // Display the selected date in the EditText or desired view
                 },
                 year,
@@ -138,6 +154,19 @@ class Register : BaseActivity() {
         spinner.adapter = adapter
 
         buttonRegister.setOnClickListener {
+//            imageUri?.let {
+//                val tmp: String? = convertImageToBase64(this, imageUri!!)
+//                tmp?.let {
+//                    Log.d("base64", tmp)
+//                    // Process the base64 string if it's not null
+//                } ?: run {
+//                    Log.e("base64", "Conversion failed or imageUri is null")
+//                    // Handle the case where conversion failed or imageUri is null
+//                }
+//            } ?: run {
+//                Log.e("base64", "imageUri is null")
+//                // Handle the case where imageUri is null
+//            }
             var team = editTeam.text.toString().trim()
             var title = editTitle.text.toString().trim()
             var image_url = "tmp"
@@ -149,70 +178,81 @@ class Register : BaseActivity() {
             val tmpstarttime = start_time.split(":")
             val tmpendtime = end_time.split(":")
 
-            if(!((tmpstarttime[0] < tmpendtime[0]) || ((tmpstarttime[0] == tmpendtime[0]) && tmpstarttime[1]<tmpendtime[1]))){
-                showToast("시작시간은 종료시간보다 빨라야합니다")
-            }
-            else if(team.length == 0){
+            if (team.length == 0) {
                 showToast("밴드명을 입력해주세요")
-            }
-            else if(title.length == 0){
+            } else if (title.length == 0) {
                 showToast("공연명을 입력해주세요")
-            }
-            else if(image_url.length == 0){
+            } else if (image_url.length == 0) {
                 showToast("공연명을 입력해주세요")
-            }
-            else if(date.length == 0){
+            } else if (date.length == 0) {
                 showToast("날짜를 입력해주세요")
-            }
-            else if(location == "공연 장소를 선택하세요"){
+            } else if (location == "공연 장소를 선택하세요") {
                 showToast("장소을 선택해주세요")
-            }
-            else if(start_time.length == 0){
+            } else if (start_time.length == 0) {
                 showToast("공연 시작 시간을 입력해주세요")
-            }
-            else if(end_time.length == 0){
+            } else if (end_time.length == 0) {
                 showToast("공연 종료 시간을 입력해주세요")
-            }
-            else if(setlist.length == 0){
+            } else if (!((tmpstarttime[0] < tmpendtime[0]) || ((tmpstarttime[0] == tmpendtime[0]) && tmpstarttime[1] < tmpendtime[1]))) {
+                showToast("시작시간은 종료시간보다 빨라야합니다")
+            } else if (setlist.length == 0) {
                 showToast("셋리스트를 입력해주세요")
-            }
-            else {
-                val jsonObject = JSONObject()
-                jsonObject.put("title", title)
-                jsonObject.put("team", team)
-                jsonObject.put("image_url", image_url)
-                jsonObject.put("date", date)
-                jsonObject.put("location", location)
-                jsonObject.put("setlist", setlist)
-                jsonObject.put("start_time", start_time)
-                jsonObject.put("end_time", end_time)
+            } else {
+                val inputStream: InputStream? = contentResolver.openInputStream(imageUri!!)
+                var requestBody: RequestBody? = null
+                inputStream?.let {
+                    val mediaType = "image/*".toMediaTypeOrNull()
+                    requestBody = object : RequestBody() {
+                        override fun contentType(): MediaType? {
+                            return mediaType
+                        }
 
-                val jsonString = jsonObject.toString()
-                val client = OkHttpClient()
+                        override fun contentLength(): Long {
+                            // Return the content length of the input stream
+                            // (You might not know the exact length, so returning -1 is common)
+                            return -1
+                        }
 
-                val mediaType = "application/json; charset=utf-8".toMediaType()
-                val requestBody = jsonString.toRequestBody(mediaType)
+                        override fun writeTo(sink: BufferedSink) {
+                            inputStream.use { input ->
+                                sink.writeAll(input.source())
+                            }
+                        }
+                    }
+                }
+
+                val mutipartBody = MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("team", team)
+                    .addFormDataPart("title", title)
+                    .addFormDataPart("date", date)
+                    .addFormDataPart("location", location)
+                    .addFormDataPart("start_time", start_time)
+                    .addFormDataPart("end_time", end_time)
+                    .addFormDataPart("setlist", setlist)
+                    .addFormDataPart("image", "image.jpg", requestBody!!)
+                    .build()
 
                 val request = Request.Builder()
                     .url("http://172.10.7.78:80/store_busking") // Replace with your server's URL
-                    .post(requestBody)
+                    .post(mutipartBody)
                     .build()
-
-                client.newCall(request).enqueue(object : okhttp3.Callback {
+                val client = OkHttpClient()
+                client.newCall(request).enqueue(object : Callback {
 
                     override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
                         // Handle the server response here if needed
                         if (response.code == 200) {
                             // Response code is 200 - Start a new activity
-                            val intent = Intent( this@Register, CheckRegister::class.java)
-                            intent.putExtra("title",title)
-                            intent.putExtra("location",location)
+                            val intent = Intent(this@Register, CheckRegister::class.java)
+                            intent.putExtra("title", title)
+                            intent.putExtra("location", location)
                             startActivity(intent)
                             // Finish the current activity if needed
 //                            finish()
                         } else {
                             // Handle other response codes or scenarios
                             val responseBody = response.body?.string()
+//                            showToast("something is wrong..")
                             // Handle the response for other cases
                         }
 
@@ -225,13 +265,15 @@ class Register : BaseActivity() {
                     }
                 })
 
-            }
 
+            }
 
 
         }
 
-
+//        fun showToast(message: String) {
+//            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+//        }
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -240,7 +282,7 @@ class Register : BaseActivity() {
             findViewById<ImageView>(R.id.concertimage)?.setImageURI(imageUri)
         }
     }
-    private fun showToast(message: String) {
+    fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }
