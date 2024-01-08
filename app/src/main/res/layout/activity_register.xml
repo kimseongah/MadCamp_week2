@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="#F2F4F6">
     <LinearLayout
         android:id="@+id/textViewTitle"
         android:layout_width="match_parent"
@@ -25,41 +26,193 @@
             android:textSize="28sp" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/register_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="새로운 공연 일정 추가"
-        android:layout_marginLeft="20dp"
-        android:layout_below="@+id/textViewTitle"
-        android:layout_marginTop="23dp"
-        android:textSize="25sp"
-        android:textStyle="bold"/>
-
-    <ImageView
-        android:id="@+id/concertimage"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_below="@+id/register_text"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="23dp"
-        app:srcCompat="@drawable/addimage"
-        android:scaleType="centerCrop"/>
-
-    <EditText
-        android:id="@+id/editTextemail"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/concertimage"
-        android:layout_marginStart="@dimen/padding_1"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="@dimen/padding_1"
-        android:hint="밴드명"
-        app:layout_constraintBottom_toBottomOf="@+id/concertimage"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:background="#FFFFFF"
-        />
 
     <include layout="@layout/bottom_navigation"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/textViewTitle"
+        android:layout_above="@id/bottom_navigation">
+
+
+
+<!--        -->
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/register_text"
+            android:layout_marginTop="0dp"
+            android:background="#F2F4F6"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/register_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="새로운 공연 일정 추가"
+                android:layout_marginLeft="20dp"
+
+                android:layout_marginTop="15dp"
+                android:textSize="25sp"
+                android:textStyle="bold"/>
+
+            <!-- Your existing layout content -->
+            <ImageView
+                android:id="@+id/concertimage"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:scaleType="centerCrop"
+                android:layout_below="@+id/register_text"
+                app:srcCompat="@drawable/addimage" />
+
+            <EditText
+                android:id="@+id/editteam"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/concertimage"
+                android:layout_marginStart="@dimen/padding_1"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="@dimen/padding_1"
+                android:height="40dp"
+                android:background="@drawable/custom_edit"
+                android:hint="밴드명"
+                android:paddingLeft="15dp"
+                app:layout_constraintBottom_toBottomOf="@+id/concertimage"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <EditText
+                android:id="@+id/edittitle"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editteam"
+                android:layout_marginStart="@dimen/padding_1"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="@dimen/padding_1"
+                android:height="40dp"
+                android:background="@drawable/custom_edit"
+                android:hint="공연명"
+                android:paddingLeft="15dp"
+                app:layout_constraintBottom_toBottomOf="@+id/concertimage"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <EditText
+                android:id="@+id/editdate"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/edittitle"
+                android:layout_marginStart="@dimen/padding_1"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="@dimen/padding_1"
+                android:height="40dp"
+                android:background="@drawable/custom_edit"
+                android:focusable="false"
+                android:hint="날짜"
+                android:paddingLeft="15dp"
+                app:layout_constraintBottom_toBottomOf="@+id/concertimage"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/times"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/editdate"
+                android:layout_marginTop="15dp"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/editstarttime"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/editdate"
+                    android:layout_marginStart="@dimen/padding_1"
+                    android:layout_weight="1"
+                    android:height="40dp"
+                    android:background="@drawable/custom_edit"
+                    android:focusable="false"
+                    android:theme="@style/TimePickerTheme"
+                    android:hint="시작 시간"
+                    android:paddingLeft="15dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/concertimage"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <EditText
+                    android:id="@+id/editendtime"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/editdate"
+                    android:layout_marginStart="@dimen/padding_1"
+                    android:layout_marginEnd="@dimen/padding_1"
+                    android:layout_weight="1"
+                    android:height="40dp"
+                    android:background="@drawable/custom_edit"
+                    android:focusable="false"
+                    android:theme="@style/TimePickerTheme"
+                    android:hint="종료 시간"
+                    android:paddingLeft="15dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/concertimage"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+            </LinearLayout>
+
+            <Spinner
+                android:id="@+id/editlocation"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_below="@+id/times"
+                android:layout_marginStart="@dimen/padding_1"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="@dimen/padding_1"
+                android:height="40dp"
+                android:background="@drawable/custom_edit"
+                android:focusable="false"
+                android:hint="장소"
+                android:paddingLeft="15dp"
+
+                app:layout_constraintBottom_toBottomOf="@+id/times"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+            <EditText
+                android:id="@+id/editsetlist"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editlocation"
+                android:layout_marginStart="@dimen/padding_1"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="@dimen/padding_1"
+                android:background="@drawable/custom_edit"
+                android:hint="셋리스트"
+                android:paddingLeft="15dp"
+                android:maxLines="30"
+                android:minHeight="40dp"
+                app:layout_constraintBottom_toBottomOf="@+id/concertimage"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+            <Button
+                android:id="@+id/buttonregister"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginEnd="16dp"
+                android:backgroundTint="#55B8E7"
+                android:text="공연 추가하기"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_below="@id/editsetlist" />
+        </RelativeLayout>
+
+
+
+    </ScrollView>
+
+
+
+
 </RelativeLayout>
