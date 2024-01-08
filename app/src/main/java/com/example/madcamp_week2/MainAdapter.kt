@@ -22,7 +22,8 @@ class MainAdapter(private val events: List<Event>) : RecyclerView.Adapter<MainAd
         return EventViewHolder(view)
     }
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-        val event = events[position]
+        val realPosition = position % events.size
+        val event = events[realPosition]
         Glide.with(holder.itemView.context)
             .load(event.image)
             .into(holder.imageView)
@@ -31,7 +32,7 @@ class MainAdapter(private val events: List<Event>) : RecyclerView.Adapter<MainAd
         holder.locationView.text = event.location
     }
     override fun getItemCount(): Int {
-        return events.size
+        return if(events.isEmpty()) 0 else Integer.MAX_VALUE
     }
 
 }
