@@ -9,4 +9,30 @@
         <item name="colorControlNormal">#11AEF9</item>
         <!-- Add other attributes as needed -->
     </style>
+    <style name="CustomDatePickerDialogTheme" parent="ThemeOverlay.MaterialComponents.Dialog">
+        <!-- Customize DatePickerDialog attributes -->
+        <item name="colorControlActivated">#00E2FF</item> <!-- Change activated color -->
+        <item name="colorAccent">#11AEF9</item> <!-- Change accent color -->
+        <!-- Add other attributes to customize -->
+        <item name="color">#111111</item>
+    </style>
+    <string-array name="options_array">
+        <item>공연 장소를 선택하세요</item>
+        <item>카이마루 앞</item>
+        <item>태울관 미래홀</item>
+        <item>스포츠 컴플렉스</item>
+        <item>잔디광장(도서관 앞)</item>
+        <item>신학관 울림홀</item>
+        <item>대강당</item>
+        <!-- 원하는 만큼 객관식 선택 옵션 추가 -->
+    </string-array>
+    <style name="TimePickerTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:colorAccent">#11AEF9</item>
+
+        <!-- Add any other customizations here -->
+    </style>
+    <style name="CustomTimePickerDialog" parent="@android:style/Theme.Material.Light.Dialog">
+        <item name="android:colorAccent">#11AEF9</item>
+    </style>
+
 </resources>
