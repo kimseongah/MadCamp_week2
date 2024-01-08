@@ -27,8 +27,12 @@
         <!-- 원하는 만큼 객관식 선택 옵션 추가 -->
     </string-array>
     <style name="TimePickerTheme" parent="Theme.AppCompat.Light.Dialog">
-        <!-- Customize the color for the TimePicker -->
-        <item name="colorAccent">#11AEF9</item>
+        <item name="android:colorAccent">#11AEF9</item>
+
         <!-- Add any other customizations here -->
     </style>
+    <style name="CustomTimePickerDialog" parent="@android:style/Theme.Material.Light.Dialog">
+        <item name="android:colorAccent">#11AEF9</item>
+    </style>
+
 </resources>

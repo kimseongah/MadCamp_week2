@@ -28,4 +28,6 @@
     <color name="blue_accent">#ff1f8cff</color>
     <color name="blue_accent_light">#ff3396ff</color>
     <color name="blue_kakaomap_light">#ff3b9aff</color>
+
+    <color name="custom_button_text_color">#000000</color>
 </resources>
