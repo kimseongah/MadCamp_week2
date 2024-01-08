@@ -25,6 +25,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.IOException
 import java.util.Calendar
+import kotlin.coroutines.jvm.internal.CompletedContinuation.context
 
 class Register : BaseActivity() {
     class CustomTimePickerDialog(
@@ -194,9 +195,21 @@ class Register : BaseActivity() {
                     .build()
 
                 client.newCall(request).enqueue(object : okhttp3.Callback {
+
                     override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
                         // Handle the server response here if needed
-                        val responseBody = response.body?.string()
+                        if (response.code == 200) {
+                            // Response code is 200 - Start a new activity
+                            val intent = Intent(context, YourNewActivity::class.java)
+                            startActivity(intent)
+
+                            // Finish the current activity if needed
+                            finish()
+                        } else {
+                            // Handle other response codes or scenarios
+                            val responseBody = response.body?.string()
+                            // Handle the response for other cases
+                        }
 
                         // Handle response
                     }
