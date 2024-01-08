@@ -146,9 +146,13 @@ class Register : BaseActivity() {
             var start_time = editStartTime.text.toString().trim()
             var end_time = editEndTime.text.toString().trim()
             var setlist = concertSetList.text.toString().trim()
+            val tmpstarttime = start_time.split(":")
+            val tmpendtime = end_time.split(":")
 
-
-            if(team.length == 0){
+            if(!((tmpstarttime[0] < tmpendtime[0]) || ((tmpstarttime[0] == tmpendtime[0]) && tmpstarttime[1]<tmpendtime[1]))){
+                showToast("시작시간은 종료시간보다 빨라야합니다")
+            }
+            else if(team.length == 0){
                 showToast("밴드명을 입력해주세요")
             }
             else if(title.length == 0){
@@ -201,6 +205,8 @@ class Register : BaseActivity() {
                         if (response.code == 200) {
                             // Response code is 200 - Start a new activity
                             val intent = Intent( this@Register, CheckRegister::class.java)
+                            intent.putExtra("title",title)
+                            intent.putExtra("location",location)
                             startActivity(intent)
                             // Finish the current activity if needed
 //                            finish()
