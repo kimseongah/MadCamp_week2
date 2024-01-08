@@ -84,7 +84,7 @@ class SignIn : AppCompatActivity() {
                     override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
                         // Handle the server response here if needed
                         val responseBody = response.body?.string()
-                        // Handle response
+                        this@SignIn.finish()
                     }
 
                     override fun onFailure(call: okhttp3.Call, e: IOException) {

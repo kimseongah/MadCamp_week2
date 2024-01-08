@@ -1,10 +1,18 @@
 package com.example.madcamp_week2
 
 import android.content.Intent
+import android.os.Bundle
+import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 open class BaseActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+        super.onCreate(savedInstanceState, persistentState)
+        val sharedPreferences = getSharedPreferences("MyAppPreferences", MODE_PRIVATE)
+        val username = sharedPreferences.getString("USERNAME", "DefaultName")
+
+    }
     protected fun setupBottomNavigation(currentMenuId: Int) {
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigationView.selectedItemId = currentMenuId // 현재 액티비티의 탭 활성화
