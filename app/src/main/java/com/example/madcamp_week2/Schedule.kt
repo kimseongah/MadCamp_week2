@@ -15,9 +15,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 import retrofit2.http.GET
 
-interface ApiService {
+interface getallbusking {
     @GET("/get_all_busking") // Replace with your actual endpoint
-    fun getAllBusking(): Call<List<Busking>>
+    fun getAllBusking(): Call<BuskingResponse?>
 }
 data class Busking(
     val id: Int,
@@ -27,8 +27,15 @@ data class Busking(
     val date: String,
     val location: String,
     val setlist: String,
-    val startTime: String,
-    val endTime: String
+    val start_time: String,
+    val end_time: String
+)
+data class BuskingResponse(
+    val busking_list: List<Busking>,
+    val position_list: List<Int>,
+    val header_list: List<Int>,
+    val beforeheader_list: List<Int>,
+    val listvalue: List<Int>
 )
 class Schedule : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,18 +47,24 @@ class Schedule : BaseActivity() {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-        val apiService = retrofit.create(ApiService::class.java)
+        val apiService = retrofit.create(getallbusking::class.java)
 
         val call = apiService.getAllBusking()
         Log.d("Response", "test")
-        call.enqueue(object : Callback<List<Busking>> {
-            override fun onResponse(call: Call<List<Busking>>, response: Response<List<Busking>>) {
+        call.enqueue(object : Callback<BuskingResponse?> {
+            override fun onResponse(call: Call<BuskingResponse?>, response: Response<BuskingResponse?>) {
                 if (response.isSuccessful) {
-                    val buskingList = response.body()
-                    Log.d("BuskingList", buskingList.toString())
-                    if (buskingList != null && buskingList.isNotEmpty()) {
+                    val buskingResponse:BuskingResponse? = response.body()
+                    if (buskingResponse != null) {
+                        val buskingList = buskingResponse.busking_list
+                        val positionList = buskingResponse.position_list
+                        val headerList = buskingResponse.header_list
+                        val beforeHeaderList = buskingResponse.beforeheader_list
+                        val listValue = buskingResponse.listvalue
+                        Log.d("BuskingList", buskingList.toString())
+
                         val recyclerView = findViewById<View>(R.id.recyclerViewSchedule) as RecyclerView
-                        val adapter = BuskingAdapter(buskingList)
+                        val adapter = BuskingAdapter(buskingList,positionList,headerList,beforeHeaderList,listValue)
                         recyclerView.adapter = adapter
                         recyclerView.layoutManager = LinearLayoutManager(this@Schedule)
                         adapter.notifyDataSetChanged()
@@ -65,7 +78,7 @@ class Schedule : BaseActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<List<Busking>>, t: Throwable) {
+            override fun onFailure(call: Call<BuskingResponse?>, t: Throwable) {
                 println("Failed to fetch busking data: ${t.message}")
             }
         })

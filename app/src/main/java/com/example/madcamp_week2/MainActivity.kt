@@ -2,6 +2,7 @@ package com.example.madcamp_week2
 
 import android.content.pm.LabeledIntent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,7 +19,18 @@ import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
 import com.prolificinteractive.materialcalendarview.CalendarDay
+import kotlinx.coroutines.NonCancellable.start
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
 
+interface gettodaybusking {
+    @GET("/get_today_busking") // Replace with your actual endpoint
+    fun getTodayBusking(): Call<List<Busking>>
+}
 
 class MainActivity : BaseActivity() {
     private lateinit var events: List<Event>
@@ -53,18 +65,51 @@ class MainActivity : BaseActivity() {
         events  = listOf(Event("fdsa","Rock!", "https://postfiles.pstatic.net/MjAyNDAxMDhfMjQ5/MDAxNzA0NjkyODU3MDAz.bxWdedrxmfNoM8IC1TgIgL2UuggV2pkPh2tecBdkhYQg.k_tnwjfJGGSBRIr_tMesywmxJy-QsLKBNVk7MSJysl4g.JPEG.kimsa0322/profile1.jpg?type=w773", CalendarDay.today(),  "스포츠 컴플렉스", myMutableList, "16:00 ~ 18:00"),
             Event("asdf","Rock!", "https://postfiles.pstatic.net/MjAyNDAxMDhfNjIg/MDAxNzA0NjkzMzkyNjM4.ol_MRQcg2GCvob34H5YXbp_T6b1v73Hn6jrsdt5krecg.4K0cjo4-fqH_z1kkc-JwJFnUH7cods_CORELMYW4Ga0g.JPEG.kimsa0322/b0e32d07-40ba-4ccd-8786-5385f68bb90b.jpg?type=w773", CalendarDay.today(),  "카이마루", myMutableList, "16:00 ~ 18:00"),
             Event("qwer","Rock!", "https://postfiles.pstatic.net/MjAyNDAxMDhfMTc1/MDAxNzA0NjkzMTQ0NTc4.aEmGN2J50RK9ZQnSvr2GsZWxAAX5O2bZtSlZOvmuFtQg.r1w5ndrnEV_PXjKVrbgnwrurVEzlECJZ8X_pXDIjA58g.JPEG.kimsa0322/9886ceb0-252e-4ec4-a2d3-ecd7a7671c17.jpg?type=w773", CalendarDay.today(),  "울림홀", myMutableList, "16:00 ~ 18:00"))
+        //today busking list get from server
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://172.10.7.78:80/") // Replace with your API base URL
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
+        val apiService = retrofit.create(gettodaybusking::class.java)
+
+        val call = apiService.getTodayBusking()
+        call.enqueue(object : Callback<List<Busking>> {
+            /*todo*/
+            override fun onResponse(call: Call<List<Busking>>, response: Response<List<Busking>>) {
+                if (response.isSuccessful) {
+                    val todayBuskingList = response.body()
+                    Log.d("todayBuskingList", todayBuskingList.toString())
+                    if (todayBuskingList != null && todayBuskingList.isNotEmpty()) {
+                        val recyclerView = findViewById<View>(R.id.recyclerView) as RecyclerView
+                        val adapter = MainAdapter(todayBuskingList)
+                        recyclerView.adapter = adapter
+                        recyclerView?.layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false)
+                    } else {
+                        // Handle the case when the buskingList is null or empty
+                        // For instance, you can show a message or handle this scenario accordingly
+                        Log.d("Response", "Empty or null buskingList")
+                    }
+                }else {
+                    Log.d("Failed to fetch busking data:", "${response.message()}")
+                }
+            }
+
+            override fun onFailure(call: Call<List<Busking>>, t: Throwable) {
+                println("Failed to fetch busking data: ${t.message}")
+            }
+        })
         // 데이터 로드 및 어댑터에 데이터 설정
         mapView = findViewById<MapView>(R.id.map_view)
         mapView?.run { start(lifeCycleCallback, readyCallback) }
 
-        recyclerView = findViewById<View>(R.id.recyclerView) as RecyclerView?
-        recyclerView?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+//        recyclerView = findViewById<View>(R.id.recyclerView) as RecyclerView?
+//        recyclerView?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
-        scrollToCenter(events.size)
+//        scrollToCenter(events.size)
 
-        adapter = MainAdapter(events)
-        recyclerView?.adapter = adapter
+//        adapter = MainAdapter(events)
+//        recyclerView?.adapter = adapter
     }
 
     private val readyCallback: KakaoMapReadyCallback = object : KakaoMapReadyCallback() {
