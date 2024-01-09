@@ -22,7 +22,7 @@ open class BaseActivity : AppCompatActivity() {
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.page_1 -> navigateTo(MainActivity::class.java, R.id.page_1)
-                R.id.page_2 -> navigateTo(NoneActivity::class.java, R.id.page_2)
+                R.id.page_2 -> navigateTo(Schedule::class.java, R.id.page_2)
                 R.id.page_3 -> navigateTo(NoneActivity::class.java, R.id.page_3)
                 R.id.page_4 -> navigateTo(Register::class.java, R.id.page_4)
             }

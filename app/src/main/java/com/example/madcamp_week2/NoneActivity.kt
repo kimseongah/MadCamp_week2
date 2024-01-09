@@ -17,7 +17,7 @@ class NoneActivity : BaseActivity() {
 
         binding = ActivityNoneBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setupBottomNavigation(R.id.page_2)
+        setupBottomNavigation(R.id.page_3)
 
     }
 
