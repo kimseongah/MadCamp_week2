@@ -18,9 +18,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MadCamp_week2"
         android:usesCleartextTraffic="true">
-        <activity
-            android:name=".Schedule"
-            android:exported="false" />
+        <activity android:name=".EditProfileActivity"
+            android:exported="false"/>
+        <activity android:name=".MypageActivity"
+            android:exported="false"/>
+        <activity android:name=".Schedule"
+            android:exported="false"/>
         <activity
             android:name=".CheckRegister"
             android:exported="false" />
@@ -53,22 +56,22 @@
         <activity
             android:name=".login"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+             <intent-filter>
+             <action android:name="android.intent.action.MAIN" />
+
+
+             <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
         </activity>
         <activity
             android:name=".MainActivity"
             android:exported="true">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
 
         <meta-data

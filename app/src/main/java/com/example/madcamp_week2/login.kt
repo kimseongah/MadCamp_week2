@@ -101,13 +101,15 @@ class login : AppCompatActivity() {
                     val responseBodyString = response.body?.string()
                     val jsonObject = JSONObject(responseBodyString)
                     val nameValue = jsonObject.optString("name")
+                    val sharedPreferences =
+                        getSharedPreferences("MyAppPreferences", MODE_PRIVATE)
+                    val editor = sharedPreferences.edit()
                     if(autologin.isChecked) {
-                        val sharedPreferences =
-                            getSharedPreferences("MyAppPreferences", MODE_PRIVATE)
-                        val editor = sharedPreferences.edit()
                         editor.putString("USERNAME", nameValue)
                         editor.apply()
                     }
+                    editor.putString("ID", id)
+                    editor.apply()
                     val intent = Intent(this@login, MainActivity::class.java)
                     startActivity(intent)
                 } else {
@@ -146,6 +148,7 @@ class login : AppCompatActivity() {
         } else {
             UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
         }
+
         UserApiClient.instance.me { user, error ->
             if (error != null) {
                 Log.e(TAG, "사용자 정보 요청 실패", error)
@@ -153,18 +156,22 @@ class login : AppCompatActivity() {
                 val id = user.kakaoAccount?.email
                 val password = user.id.toString()
                 val name = user.kakaoAccount?.profile?.nickname
-                // 서버로 사용자 정보 전송
-                sendUserInfoToServer(id, password, name)
+                val profileImageUrl = user.kakaoAccount?.profile?.thumbnailImageUrl // 프로필 사진 URL 가져오기
+
+                // 서버로 사용자 정보 및 프로필 이미지 URL 전송
+                sendUserInfoToServer(id, password, name, profileImageUrl)
             }
         }
     }
-    private fun sendUserInfoToServer(id: String?, password: String?, name: String?): Boolean {
+
+    private fun sendUserInfoToServer(id: String?, password: String?, name: String?, imageUrl: String?): Boolean {
         val url = "http://172.10.7.78/loginwkakao" // 서버의 API 엔드포인트
 
         val jsonObject = JSONObject()
         jsonObject.put("id", id)
         jsonObject.put("password", hashSHA256(password))
         jsonObject.put("name", name)
+        jsonObject.put("image", imageUrl)
 
         val jsonString = jsonObject.toString()
         val client = OkHttpClient()
@@ -180,12 +187,15 @@ class login : AppCompatActivity() {
         client.newCall(request).enqueue(object : okhttp3.Callback {
             override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
                 if (response.isSuccessful) { // HTTP 응답 코드가 200인 경우
-                    if(autologin.isChecked){
-                        val sharedPreferences = getSharedPreferences("MyAppPreferences", MODE_PRIVATE)
-                        val editor = sharedPreferences.edit()
+                    val sharedPreferences =
+                        getSharedPreferences("MyAppPreferences", MODE_PRIVATE)
+                    val editor = sharedPreferences.edit()
+                    if(autologin.isChecked) {
                         editor.putString("USERNAME", name)
                         editor.apply()
                     }
+                    editor.putString("ID", id)
+                    editor.apply()
                     result = true
                     val intent = Intent(this@login, MainActivity::class.java)
                     startActivity(intent)
