@@ -82,13 +82,11 @@ class SignIn : AppCompatActivity() {
 
                 client.newCall(request).enqueue(object : okhttp3.Callback {
                     override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
-                        // Handle the server response here if needed
                         val responseBody = response.body?.string()
                         this@SignIn.finish()
                     }
 
                     override fun onFailure(call: okhttp3.Call, e: IOException) {
-                        // Handle failure
                         e.printStackTrace()
                     }
                 })

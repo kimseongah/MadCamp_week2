@@ -48,13 +48,20 @@
             android:label="@string/title_activity_none"
             android:theme="@style/Theme.MadCamp_week2" />
         <activity
+            android:name=".MypageActivity"
+            android:exported="false"
+            android:label="MypageActivity"
+            android:theme="@style/Theme.MadCamp_week2" />
+        <activity
+            android:name=".EditProfileActivity"
+            android:exported="false"
+            android:label="EditProfileAcitivity"
+            android:theme="@style/Theme.MadCamp_week2" />
+        <activity
             android:name=".login"
             android:exported="true">
-
              <intent-filter>
              <action android:name="android.intent.action.MAIN" />
-
-
              <category android:name="android.intent.category.LAUNCHER" />
              </intent-filter>
         </activity>

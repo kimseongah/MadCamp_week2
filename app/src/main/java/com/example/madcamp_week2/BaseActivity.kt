@@ -3,21 +3,33 @@ package com.example.madcamp_week2
 import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 open class BaseActivity : AppCompatActivity() {
     private var currentPageId: Int = R.id.page_1
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         val sharedPreferences = getSharedPreferences("MyAppPreferences", MODE_PRIVATE)
         val username = sharedPreferences.getString("USERNAME", "DefaultName")
-
     }
+
+    private fun setupAccountIconClickListener() {
+        val accountIcon = findViewById<ImageView>(R.id.accountCircle)
+        accountIcon.setOnClickListener {
+            // MypageActivity로 이동하는 Intent 생성
+            val intent = Intent(this, MypageActivity::class.java)
+            startActivity(intent)
+            // 필요하다면 애니메이션 추가
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+        }
+    }
+
     protected fun setupBottomNavigation(currentMenuId: Int) {
+        setupAccountIconClickListener()
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigationView.selectedItemId = currentMenuId // 현재 액티비티의 탭 활성화
-
 
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
