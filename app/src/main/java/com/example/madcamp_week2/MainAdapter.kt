@@ -29,7 +29,7 @@ class MainAdapter(private val todayBuskingList: List<Busking>) : RecyclerView.Ad
         Log.d("imageurl","${currentItem}")
         holder.eventTitle.text = currentItem.title
         holder.eventLocation.text = currentItem.location
-        holder.eventTime.text = currentItem.date+" "+currentItem.start_time.substring(0,5) + "~"+ currentItem.end_time.substring(0,5)
+        holder.eventTime.text = currentItem.start_time.substring(0,5) + "~"+ currentItem.end_time.substring(0,5)
 //        holder.eventTime.text = currentItem.time
         Glide.with(holder.itemView.context)
             .load(currentItem.image_url)

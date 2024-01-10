@@ -192,7 +192,7 @@ class Register : BaseActivity() {
                 showToast("공연 시작 시간을 입력해주세요")
             } else if (end_time.length == 0) {
                 showToast("공연 종료 시간을 입력해주세요")
-            } else if (!((tmpstarttime[0] < tmpendtime[0]) || ((tmpstarttime[0] == tmpendtime[0]) && tmpstarttime[1] < tmpendtime[1]))) {
+            } else if (!((tmpstarttime[0].toInt() < tmpendtime[0].toInt()) || ((tmpstarttime[0].toInt() == tmpendtime[0].toInt()) && tmpstarttime[1].toInt() < tmpendtime[1].toInt()))) {
                 showToast("시작시간은 종료시간보다 빨라야합니다")
             } else if (setlist.length == 0) {
                 showToast("셋리스트를 입력해주세요")
@@ -241,22 +241,25 @@ class Register : BaseActivity() {
 
                     override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
                         // Handle the server response here if needed
-                        if (response.code == 200) {
-                            // Response code is 200 - Start a new activity
-                            val intent = Intent(this@Register, CheckRegister::class.java)
-                            intent.putExtra("title", title)
-                            intent.putExtra("location", location)
-                            startActivity(intent)
-                            // Finish the current activity if needed
+                        runOnUiThread{
+                            if (response.code == 200) {
+                                // Response code is 200 - Start a new activity
+                                val intent = Intent(this@Register, CheckRegister::class.java)
+                                intent.putExtra("title", title)
+                                intent.putExtra("location", location)
+                                startActivity(intent)
+                                // Finish the current activity if needed
 //                            finish()
-                        } else if (response.code ==495){
-                            showToast("해당 장소는 해당 시간에 이미 예약이 있습니다. 다른 날짜를 선택해주세요")
-                        }
+                            } else if (response.code ==495){
+                                showToast("이미 예약된 시간입니다.")
+                            }
                             else {
-                            // Handle other response codes or scenarios
-                            val responseBody = response.body?.string()
+                                // Handle other response codes or scenarios
+                                val responseBody = response.body?.string()
 //                            showToast("something is wrong..")
-                            // Handle the response for other cases
+                                // Handle the response for other cases
+                            }
+
                         }
 
                         // Handle response
