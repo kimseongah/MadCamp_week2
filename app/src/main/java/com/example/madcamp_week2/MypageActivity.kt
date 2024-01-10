@@ -5,10 +5,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.gson.Gson
@@ -23,6 +27,13 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
+import retrofit2.http.Query
 
 class MypageActivity: AppCompatActivity() {
 
@@ -35,6 +46,54 @@ class MypageActivity: AppCompatActivity() {
         setContentView(R.layout.activity_mypage)
         sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
         id = sharedPreferences.getString("ID", "No ID").toString()
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://172.10.7.78:80/") // Replace with your API base URL
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val apiService = retrofit.create(getlikebusking::class.java)
+
+        val call = apiService.getLikeBusking(id)
+        Log.d("Response", "test")
+        call.enqueue(object : Callback<BuskingResponse?> {
+            override fun onResponse(call: Call<BuskingResponse?>, response: Response<BuskingResponse?>) {
+                if (response.isSuccessful) {
+                    val buskingResponse:BuskingResponse? = response.body()
+                    if (buskingResponse != null) {
+                        val buskingList = buskingResponse.busking_list
+                        val positionList = buskingResponse.position_list
+                        val headerList = buskingResponse.header_list
+                        val beforeHeaderList = buskingResponse.beforeheader_list
+                        val like_list = buskingResponse.like_list
+                        val listValue = buskingResponse.listvalue
+                        Log.d("BuskingList", buskingList.toString())
+
+                        val recyclerView = findViewById<View>(R.id.recyclerView) as RecyclerView
+                        val adapter = BuskingAdapter(buskingList,positionList,headerList,beforeHeaderList,listValue,like_list,this@MypageActivity){ clickedItem ->
+                            val fragmentTransaction = supportFragmentManager.beginTransaction()
+                            val itemFragment = itemFragment()
+                            fragmentTransaction.replace(R.id.infoConcert, itemFragment)
+                            fragmentTransaction.addToBackStack(null)
+                            fragmentTransaction.commit()
+                        }
+                        recyclerView.adapter = adapter
+                        recyclerView.layoutManager = LinearLayoutManager(this@MypageActivity)
+                        adapter.notifyDataSetChanged()
+                    } else {
+                        // Handle the case when the buskingList is null or empty
+                        // For instance, you can show a message or handle this scenario accordingly
+                        Log.d("Response", "Empty or null buskingList")
+                    }
+                }else {
+                    Log.d("Failed to fetch busking data:", "${response.message()}")
+                }
+            }
+
+            override fun onFailure(call: Call<BuskingResponse?>, t: Throwable) {
+                println("Failed to fetch busking data: ${t.message}")
+            }
+        })
 
         val backImageView = findViewById<ImageView>(R.id.back_image_view) // 이미지뷰의 ID를 맞게 설정하세요.
         backImageView.setOnClickListener {
@@ -98,7 +157,7 @@ class MypageActivity: AppCompatActivity() {
                     val image = jsonObject.optString("image")
                     UserInfo(name,id,image)
                 } else {
-                    null
+                    UserInfo()
                 })!!
             }
         }
@@ -127,4 +186,8 @@ class MypageActivity: AppCompatActivity() {
         val id: String = "",
         val profilePictureUri: String = ""
     )
+}
+interface getlikebusking {
+    @GET("/get_like_busking") // Replace with your actual endpoint
+    fun getLikeBusking(@Query("id") id: String): Call<BuskingResponse>
 }

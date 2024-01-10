@@ -19,6 +19,18 @@
         android:theme="@style/Theme.MadCamp_week2"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".BuskingInfo"
+            android:exported="false" />
+        <activity
+            android:name=".EditProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MypageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Schedule"
+            android:exported="false" />
+      <activity
             android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>
@@ -27,12 +39,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".EditProfileActivity"
-            android:exported="false"/>
-        <activity android:name=".MypageActivity"
-            android:exported="false"/>
-        <activity android:name=".Schedule"
-            android:exported="false"/>
         <activity
             android:name=".CheckRegister"
             android:exported="false" />
