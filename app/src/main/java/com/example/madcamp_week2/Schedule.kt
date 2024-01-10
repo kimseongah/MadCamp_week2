@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.madcamp_week2.databinding.ActivityNoneBinding
@@ -14,29 +15,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 import retrofit2.http.GET
-
-interface getallbusking {
-    @GET("/get_all_busking") // Replace with your actual endpoint
-    fun getAllBusking(): Call<BuskingResponse?>
-}
-data class Busking(
-    val id: Int,
-    val title: String,
-    val team: String,
-    val image_url: String,
-    val date: String,
-    val location: String,
-    val setlist: String,
-    val start_time: String,
-    val end_time: String
-)
-data class BuskingResponse(
-    val busking_list: List<Busking>,
-    val position_list: List<Int>,
-    val header_list: List<Int>,
-    val beforeheader_list: List<Int>,
-    val listvalue: List<Int>
-)
 class Schedule : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,5 +60,11 @@ class Schedule : BaseActivity() {
                 println("Failed to fetch busking data: ${t.message}")
             }
         })
+
     }
+}
+
+interface getallbusking {
+    @GET("/get_all_busking") // Replace with your actual endpoint
+    fun getAllBusking(): Call<BuskingResponse?>
 }

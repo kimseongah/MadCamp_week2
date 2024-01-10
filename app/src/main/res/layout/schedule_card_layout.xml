@@ -71,6 +71,6 @@
             android:layout_marginTop="4dp"
             android:layout_marginEnd="@dimen/padding_0"
             android:contentDescription="@string/see_more"
-            android:src="@drawable/baseline_favorite_24" />
+            android:src="@drawable/ic_favorite" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>
