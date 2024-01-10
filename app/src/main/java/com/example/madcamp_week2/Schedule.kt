@@ -1,5 +1,7 @@
 package com.example.madcamp_week2
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -14,10 +16,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 interface getallbusking {
     @GET("/get_all_busking") // Replace with your actual endpoint
-    fun getAllBusking(): Call<BuskingResponse?>
+    fun getAllBusking(@Query("id") id: String): Call<BuskingResponse?>
 }
 data class Busking(
     val id: Int,
@@ -35,13 +38,18 @@ data class BuskingResponse(
     val position_list: List<Int>,
     val header_list: List<Int>,
     val beforeheader_list: List<Int>,
+    val like_list: List<Int>,
     val listvalue: List<Int>
 )
 class Schedule : BaseActivity() {
+    private lateinit var id : String
+    private lateinit var sharedPreferences: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_schedule)
         setupBottomNavigation(R.id.page_2)
+        sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
+        id = sharedPreferences.getString("ID", "No ID").toString()
         val retrofit = Retrofit.Builder()
             .baseUrl("http://172.10.7.78:80/") // Replace with your API base URL
             .addConverterFactory(GsonConverterFactory.create())
@@ -49,7 +57,7 @@ class Schedule : BaseActivity() {
 
         val apiService = retrofit.create(getallbusking::class.java)
 
-        val call = apiService.getAllBusking()
+        val call = apiService.getAllBusking(id)
         Log.d("Response", "test")
         call.enqueue(object : Callback<BuskingResponse?> {
             override fun onResponse(call: Call<BuskingResponse?>, response: Response<BuskingResponse?>) {
@@ -61,10 +69,11 @@ class Schedule : BaseActivity() {
                         val headerList = buskingResponse.header_list
                         val beforeHeaderList = buskingResponse.beforeheader_list
                         val listValue = buskingResponse.listvalue
+                        val like_list = buskingResponse.like_list
                         Log.d("BuskingList", buskingList.toString())
 
                         val recyclerView = findViewById<View>(R.id.recyclerViewSchedule) as RecyclerView
-                        val adapter = BuskingAdapter(buskingList,positionList,headerList,beforeHeaderList,listValue){ clickedItem ->
+                        val adapter = BuskingAdapter(buskingList,positionList,headerList,beforeHeaderList,listValue,like_list,this@Schedule){ clickedItem ->
                             val fragmentTransaction = supportFragmentManager.beginTransaction()
                             val itemFragment = itemFragment()
                             fragmentTransaction.replace(R.id.infoConcert, itemFragment)
