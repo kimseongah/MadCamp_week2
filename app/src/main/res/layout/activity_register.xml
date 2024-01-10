@@ -117,7 +117,7 @@
                     android:background="@drawable/custom_edit"
                     android:focusable="false"
                     android:theme="@style/TimePickerTheme"
-                    android:hint="시작 시료"
+                    android:hint="시작 시간"
                     android:paddingLeft="15dp"
                     app:layout_constraintBottom_toBottomOf="@+id/concertimage"
                     app:layout_constraintEnd_toEndOf="parent"
