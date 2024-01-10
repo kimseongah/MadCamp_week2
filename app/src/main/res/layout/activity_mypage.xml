@@ -135,31 +135,32 @@
                 android:layout_width="0dp"
                 android:layout_height="70dp"
                 android:layout_weight="1"
-                android:src="@drawable/medal"/>
+                android:layout_gravity="bottom"
+                android:src="@drawable/lv1" />
 
             <ImageView
                 android:layout_width="0dp"
-                android:layout_height="70dp"
+                android:layout_height="90dp"
                 android:layout_weight="1"
-                android:src="@drawable/medal"/>
+                android:src="@drawable/lv2"/>
 
             <ImageView
                 android:layout_width="0dp"
-                android:layout_height="70dp"
+                android:layout_height="90dp"
                 android:layout_weight="1"
-                android:src="@drawable/medal"/>
+                android:src="@drawable/lv3"/>
 
             <ImageView
                 android:layout_width="0dp"
-                android:layout_height="70dp"
+                android:layout_height="90dp"
                 android:layout_weight="1"
-                android:src="@drawable/medal"/>
+                android:src="@drawable/lv4"/>
 
             <ImageView
                 android:layout_width="0dp"
-                android:layout_height="70dp"
+                android:layout_height="90dp"
                 android:layout_weight="1"
-                android:src="@drawable/medal"/>
+                android:src="@drawable/lv5"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
