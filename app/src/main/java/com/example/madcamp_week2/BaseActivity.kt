@@ -15,19 +15,7 @@ open class BaseActivity : AppCompatActivity() {
         val username = sharedPreferences.getString("USERNAME", "DefaultName")
     }
 
-    private fun setupAccountIconClickListener() {
-        val accountIcon = findViewById<ImageView>(R.id.accountCircle)
-        accountIcon.setOnClickListener {
-            // MypageActivity로 이동하는 Intent 생성
-            val intent = Intent(this, MypageActivity::class.java)
-            startActivity(intent)
-            // 필요하다면 애니메이션 추가
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-        }
-    }
-
     protected fun setupBottomNavigation(currentMenuId: Int) {
-        setupAccountIconClickListener()
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigationView.selectedItemId = currentMenuId // 현재 액티비티의 탭 활성화
 
@@ -35,8 +23,8 @@ open class BaseActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.page_1 -> navigateTo(MainActivity::class.java, R.id.page_1)
                 R.id.page_2 -> navigateTo(Schedule::class.java, R.id.page_2)
-                R.id.page_3 -> navigateTo(NoneActivity::class.java, R.id.page_3)
-                R.id.page_4 -> navigateTo(Register::class.java, R.id.page_4)
+                R.id.page_3 -> navigateTo(Register::class.java, R.id.page_3)
+                R.id.page_4 -> navigateTo(MypageActivity::class.java, R.id.page_4)
             }
             true
         }

@@ -35,7 +35,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-class MypageActivity: AppCompatActivity() {
+class MypageActivity: BaseActivity() {
 
     private val jsonMediaType = "application/json; charset=utf-8".toMediaType()
     private lateinit var sharedPreferences: SharedPreferences
@@ -44,6 +44,7 @@ class MypageActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mypage)
+        setupBottomNavigation(R.id.page_4)
         sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
         id = sharedPreferences.getString("ID", "No ID").toString()
 
@@ -94,11 +95,6 @@ class MypageActivity: AppCompatActivity() {
                 println("Failed to fetch busking data: ${t.message}")
             }
         })
-
-        val backImageView = findViewById<ImageView>(R.id.back_image_view) // 이미지뷰의 ID를 맞게 설정하세요.
-        backImageView.setOnClickListener {
-            finish() // 현재 액티비티 종료
-        }
 
         val editInfo = findViewById<CardView>(R.id.card_edittext)
         editInfo.setOnClickListener{
