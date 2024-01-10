@@ -64,7 +64,13 @@ class Schedule : BaseActivity() {
                         Log.d("BuskingList", buskingList.toString())
 
                         val recyclerView = findViewById<View>(R.id.recyclerViewSchedule) as RecyclerView
-                        val adapter = BuskingAdapter(buskingList,positionList,headerList,beforeHeaderList,listValue)
+                        val adapter = BuskingAdapter(buskingList,positionList,headerList,beforeHeaderList,listValue){ clickedItem ->
+                            val fragmentTransaction = supportFragmentManager.beginTransaction()
+                            val itemFragment = itemFragment()
+                            fragmentTransaction.replace(R.id.infoConcert, itemFragment)
+                            fragmentTransaction.addToBackStack(null)
+                            fragmentTransaction.commit()
+                        }
                         recyclerView.adapter = adapter
                         recyclerView.layoutManager = LinearLayoutManager(this@Schedule)
                         adapter.notifyDataSetChanged()
@@ -81,6 +87,18 @@ class Schedule : BaseActivity() {
             override fun onFailure(call: Call<BuskingResponse?>, t: Throwable) {
                 println("Failed to fetch busking data: ${t.message}")
             }
+//            private fun showFragmentItemDialog(clickedItem: Busking) {
+//                val fragmentManager = supportFragmentManager
+//                val fragmentTransaction = fragmentManager.beginTransaction()
+//
+//                // Create a new instance of your fragment and pass the clicked item data
+//                val fragment = itemFragment.newInstance(clickedItem)
+//
+//                // Add fragment_item.xml to your activity
+//                fragmentTransaction.replace(R.id.fragmentContainer, fragment)
+//                fragmentTransaction.addToBackStack(null)
+//                fragmentTransaction.commit()
+//            }
         })
     }
 }

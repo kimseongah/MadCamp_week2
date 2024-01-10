@@ -182,8 +182,8 @@ class Register : BaseActivity() {
                 showToast("밴드명을 입력해주세요")
             } else if (title.length == 0) {
                 showToast("공연명을 입력해주세요")
-            } else if (image_url.length == 0) {
-                showToast("공연명을 입력해주세요")
+            } else if (imageUri==null) {
+                showToast("공연 대표 사진을 골라주세요")
             } else if (date.length == 0) {
                 showToast("날짜를 입력해주세요")
             } else if (location == "공연 장소를 선택하세요") {

@@ -3,6 +3,7 @@ package com.example.madcamp_week2
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.madcamp_week2.R
 
@@ -12,4 +13,5 @@ class BuskingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val eventLocation: TextView = itemView.findViewById(R.id.eventLocation)
     val eventTime: TextView = itemView.findViewById(R.id.eventTime)
     val addButton: ImageView = itemView.findViewById(R.id.addButton)
+    val eventcard:CardView = itemView.findViewById(R.id.eventListItem)
 }

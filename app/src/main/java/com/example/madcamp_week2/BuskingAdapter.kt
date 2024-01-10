@@ -1,26 +1,32 @@
 package com.example.madcamp_week2
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.madcamp_week2.BuskingViewHolder
 import com.example.madcamp_week2.R
+import com.google.android.ads.mediationtestsuite.adapters.ItemsListRecyclerViewAdapter
 import com.google.android.ads.mediationtestsuite.viewmodels.HeaderViewHolder
 import java.net.URL
 import java.net.URLConnection
+
 
 class BuskingAdapter(
     private val buskingList: List<Busking>,
     private val positionList: List<Int>,
     private val headerList: List<Int>,
     private val beforeHeaderList: List<Int>,
-    private val listValue: List<Int>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val listValue: List<Int>,
+    private val onItemClick: (Busking) -> Unit
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val VIEW_TYPE_HEADER = 0
     private val VIEW_TYPE_ITEM = 1
@@ -48,7 +54,7 @@ class BuskingAdapter(
 //                val currentItem = buskingList[position]
 
             // Set data to views
-            Log.d("imageurl","${currentItem}")
+            Log.d("currentItem","${currentItem}")
             holder.eventTitle.text = currentItem.title
             holder.eventLocation.text = currentItem.location
             holder.eventTime.text = currentItem.date+" "+currentItem.start_time.substring(0,5) + "~"+ currentItem.end_time.substring(0,5)
@@ -59,9 +65,30 @@ class BuskingAdapter(
                 .into(holder.eventImage)
 
 //        // Handle click events or any other operations as needed
-            holder.addButton.setOnClickListener {
+            holder.eventcard.setOnClickListener {
                 // Handle click action for the add button
+//                onItemClick(currentItem)
+                val context = holder.itemView.context
+                val currentItem = buskingList[listValue[position]]
+
+                // Creating an Intent to start the buskingInfo activity
+                val intent = Intent(context, BuskingInfo::class.java)
+
+                // Pass any necessary data to the next activity using intent extras
+                intent.putExtra("date", currentItem.date)
+                intent.putExtra("title",currentItem.title)
+                intent.putExtra("team", currentItem.team)
+                intent.putExtra("location",currentItem.location)
+                intent.putExtra("start_time", currentItem.start_time)
+                intent.putExtra("end_time",currentItem.end_time)
+                intent.putExtra("setlist", currentItem.setlist)
+                intent.putExtra("image_url",currentItem.image_url)
+                // For example, passing the busking ID
+
+                // Start the buskingInfo activity
+                context.startActivity(intent)
             }
+
         }
 
 
@@ -83,6 +110,5 @@ class BuskingAdapter(
     class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textViewStickyHeader: TextView = itemView.findViewById(R.id.textViewStickyHeader)
     }
-
 
 }
