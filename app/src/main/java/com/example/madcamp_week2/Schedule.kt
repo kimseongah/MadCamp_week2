@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.madcamp_week2.databinding.ActivityNoneBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

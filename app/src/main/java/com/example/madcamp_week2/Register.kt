@@ -71,7 +71,7 @@ class Register : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
-        setupBottomNavigation(R.id.page_4)
+        setupBottomNavigation(R.id.page_3)
 
         val concertImage = findViewById<ImageView>(R.id.concertimage)
         val editTeam = findViewById<EditText>(R.id.editteam)
