@@ -33,7 +33,7 @@ interface gettodaybusking {
 }
 
 class MainActivity : BaseActivity() {
-    private lateinit var events: List<Event>
+    private var todayBuskingList: List<Busking>? = null
     private val duration = 500
 
     private var recyclerView: RecyclerView? = null
@@ -48,12 +48,12 @@ class MainActivity : BaseActivity() {
 
 
     val latlngMap = mapOf(
-        "카이마루" to LatLng.from(36.3736111, 127.3588611),
+        "카이마루 앞" to LatLng.from(36.3736111, 127.3588611),
         "스포츠 컴플렉스" to LatLng.from(36.3726, 127.3614),
-        "울림홀" to LatLng.from(36.3731, 127.3601),
+        "신학관 울림홀" to LatLng.from(36.3731, 127.3601),
     )
 
-    private var labelToEventMap = hashMapOf<String, Event>()
+    private var labelToEventMap = hashMapOf<String, Busking>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,9 +62,9 @@ class MainActivity : BaseActivity() {
 
         val myMutableList: MutableList<String> = mutableListOf()
         myMutableList.add("adfad - adfaafd")
-        events  = listOf(Event("fdsa","Rock!", "https://postfiles.pstatic.net/MjAyNDAxMDhfMjQ5/MDAxNzA0NjkyODU3MDAz.bxWdedrxmfNoM8IC1TgIgL2UuggV2pkPh2tecBdkhYQg.k_tnwjfJGGSBRIr_tMesywmxJy-QsLKBNVk7MSJysl4g.JPEG.kimsa0322/profile1.jpg?type=w773", CalendarDay.today(),  "스포츠 컴플렉스", myMutableList, "16:00 ~ 18:00"),
-            Event("asdf","Rock!", "https://postfiles.pstatic.net/MjAyNDAxMDhfNjIg/MDAxNzA0NjkzMzkyNjM4.ol_MRQcg2GCvob34H5YXbp_T6b1v73Hn6jrsdt5krecg.4K0cjo4-fqH_z1kkc-JwJFnUH7cods_CORELMYW4Ga0g.JPEG.kimsa0322/b0e32d07-40ba-4ccd-8786-5385f68bb90b.jpg?type=w773", CalendarDay.today(),  "카이마루", myMutableList, "16:00 ~ 18:00"),
-            Event("qwer","Rock!", "https://postfiles.pstatic.net/MjAyNDAxMDhfMTc1/MDAxNzA0NjkzMTQ0NTc4.aEmGN2J50RK9ZQnSvr2GsZWxAAX5O2bZtSlZOvmuFtQg.r1w5ndrnEV_PXjKVrbgnwrurVEzlECJZ8X_pXDIjA58g.JPEG.kimsa0322/9886ceb0-252e-4ec4-a2d3-ecd7a7671c17.jpg?type=w773", CalendarDay.today(),  "울림홀", myMutableList, "16:00 ~ 18:00"))
+//        events  = listOf(Event("fdsa","Rock!", "https://postfiles.pstatic.net/MjAyNDAxMDhfMjQ5/MDAxNzA0NjkyODU3MDAz.bxWdedrxmfNoM8IC1TgIgL2UuggV2pkPh2tecBdkhYQg.k_tnwjfJGGSBRIr_tMesywmxJy-QsLKBNVk7MSJysl4g.JPEG.kimsa0322/profile1.jpg?type=w773", CalendarDay.today(),  "스포츠 컴플렉스", myMutableList, "16:00 ~ 18:00"),
+//            Event("asdf","Rock!", "https://postfiles.pstatic.net/MjAyNDAxMDhfNjIg/MDAxNzA0NjkzMzkyNjM4.ol_MRQcg2GCvob34H5YXbp_T6b1v73Hn6jrsdt5krecg.4K0cjo4-fqH_z1kkc-JwJFnUH7cods_CORELMYW4Ga0g.JPEG.kimsa0322/b0e32d07-40ba-4ccd-8786-5385f68bb90b.jpg?type=w773", CalendarDay.today(),  "카이마루", myMutableList, "16:00 ~ 18:00"),
+//            Event("qwer","Rock!", "https://postfiles.pstatic.net/MjAyNDAxMDhfMTc1/MDAxNzA0NjkzMTQ0NTc4.aEmGN2J50RK9ZQnSvr2GsZWxAAX5O2bZtSlZOvmuFtQg.r1w5ndrnEV_PXjKVrbgnwrurVEzlECJZ8X_pXDIjA58g.JPEG.kimsa0322/9886ceb0-252e-4ec4-a2d3-ecd7a7671c17.jpg?type=w773", CalendarDay.today(),  "울림홀", myMutableList, "16:00 ~ 18:00"))
         //today busking list get from server
         val retrofit = Retrofit.Builder()
             .baseUrl("http://172.10.7.78:80/") // Replace with your API base URL
@@ -78,12 +78,13 @@ class MainActivity : BaseActivity() {
             /*todo*/
             override fun onResponse(call: Call<List<Busking>>, response: Response<List<Busking>>) {
                 if (response.isSuccessful) {
-                    val todayBuskingList = response.body()
+                    todayBuskingList = response.body()
                     Log.d("todayBuskingList", todayBuskingList.toString())
-                    if (todayBuskingList != null && todayBuskingList.isNotEmpty()) {
-                        val recyclerView = findViewById<View>(R.id.recyclerView) as RecyclerView
-                        val adapter = MainAdapter(todayBuskingList)
-                        recyclerView.adapter = adapter
+                    if (todayBuskingList != null && todayBuskingList!!.isNotEmpty()) {
+                        recyclerView = findViewById<View>(R.id.recyclerView) as RecyclerView
+                        adapter = MainAdapter(todayBuskingList!!)
+                        scrollToCenter(1)
+                        recyclerView!!.adapter = adapter
                         recyclerView?.layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false)
                     } else {
                         // Handle the case when the buskingList is null or empty
@@ -103,13 +104,6 @@ class MainActivity : BaseActivity() {
         mapView = findViewById<MapView>(R.id.map_view)
         mapView?.run { start(lifeCycleCallback, readyCallback) }
 
-//        recyclerView = findViewById<View>(R.id.recyclerView) as RecyclerView?
-//        recyclerView?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-
-//        scrollToCenter(events.size)
-
-//        adapter = MainAdapter(events)
-//        recyclerView?.adapter = adapter
     }
 
     private val readyCallback: KakaoMapReadyCallback = object : KakaoMapReadyCallback() {
@@ -137,7 +131,7 @@ class MainActivity : BaseActivity() {
     private val lifeCycleCallback: MapLifeCycleCallback = object : MapLifeCycleCallback() {
         override fun onMapResumed() {
             super.onMapResumed()
-            events.forEach { event ->
+            todayBuskingList!!.forEach { event ->
                 setPing(event)
             }
         }
@@ -161,7 +155,7 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    private fun setPing(event: Event){
+    private fun setPing(event: Busking){
         val pos = latlngMap[event.location]
         val styles = kakaoMap!!.labelManager?.addLabelStyles(LabelStyles.from(LabelStyle.from(R.drawable.blue_ping)))
         val labelId = "label_${event.title}_${event.location}"
@@ -180,9 +174,9 @@ class MainActivity : BaseActivity() {
         currentSelectedLabelId = labelId
 
         val event = labelToEventMap[labelId]
-        val eventIndex = events.indexOf(event)
+        val eventIndex = event?.let { todayBuskingList!!.indexOf(it) }
 
-        val locationKey = events[eventIndex].location
+        val locationKey = eventIndex?.let { todayBuskingList?.get(it)?.location ?: event }
         val latLng = latlngMap[locationKey]
 
         latLng?.let {
@@ -192,13 +186,8 @@ class MainActivity : BaseActivity() {
             )
         }
 
-        if (eventIndex != -1) {
-            val currentPosition = (recyclerView?.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-            val actualItemCount = events.size
-            val currentCyclePosition = currentPosition % actualItemCount
-            val offset = eventIndex - currentCyclePosition
-            val targetPosition = currentPosition + offset + events.size
-            scrollToCenter(targetPosition)
+        if (eventIndex != null) {
+            scrollToCenter(eventIndex)
         }
     }
 
