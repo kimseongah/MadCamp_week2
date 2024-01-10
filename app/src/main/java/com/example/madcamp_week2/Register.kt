@@ -249,7 +249,10 @@ class Register : BaseActivity() {
                             startActivity(intent)
                             // Finish the current activity if needed
 //                            finish()
-                        } else {
+                        } else if (response.code ==495){
+                            showToast("해당 장소는 해당 시간에 이미 예약이 있습니다. 다른 날짜를 선택해주세요")
+                        }
+                            else {
                             // Handle other response codes or scenarios
                             val responseBody = response.body?.string()
 //                            showToast("something is wrong..")
